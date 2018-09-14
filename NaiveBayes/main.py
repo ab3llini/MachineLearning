@@ -11,9 +11,14 @@ x_tr, y_tr, x_ts, y_ts = Preprocessor(data=raw).preprocess().tokenize().split(pe
 
 model.fit(x_tr, y_tr)
 
-pred_tr = model.predict(x_tr, alpha=0.1, voc_size=20000)
-pred_ts = model.predict(x_ts, alpha=0.1, voc_size=20000)
+# pred_tr = model.predict(x_tr, alpha=0.1, voc_size=20000)
+# pred_ts = model.predict(x_ts, alpha=0.1, voc_size=20000)
 
-train_scores = BinaryScorer(y_tr, pred_tr, description='Training').describe()
-test_scores = BinaryScorer(y_ts, pred_ts, description='Testing').describe()
+# train_scores = BinaryScorer(y_tr, pred_tr, description='Training').describe()
+
+exp = [i for i in range(-5, 1)]
+
+for e in exp:
+    pred_ts = model.predict(x_ts, alpha=2**e, voc_size=20000)
+    BinaryScorer(y_ts, pred_ts, description='Testing with alpha = %s' % 2 ** e).describe()
 

@@ -54,7 +54,9 @@ class MultinomialNB(Model):
             scores = {}
             strings = {}
             for class_ in self.priors:
-                p = 1
+
+                # Init the probability of word to the one of the prior P(class)
+                p = self.priors[class_]
 
                 # Number of words for label spam/ham words y
                 c_d = 0
@@ -63,11 +65,9 @@ class MultinomialNB(Model):
 
                 strings[class_] = str(self.priors[class_])
                 for token in sample:
-                    # For each word compute its probability, given the class, alpha and voc_size
+                    # For each word compute its probability, given the class, alpha and voc_size and multiply with p
                     p *= self._compute_probability(token, class_, c_d, alpha, voc_size)
 
-                    # After we computed the probabilities for each token we need to multiply by the prior P(class)
-                p *= self.priors[class_]
                 # Add the class with its computed probability to the scores dictionary
                 scores[class_] = p
 
