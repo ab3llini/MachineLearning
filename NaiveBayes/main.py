@@ -4,7 +4,6 @@ from model import MultinomialNB
 from preprocessing import Preprocessor
 from scorer import BinaryScorer
 from matplotlib import pyplot as plt
-from matplotlib.pyplot import figure
 
 # Open file and read content in a variable.
 # Couldn't use standard python way of opening files due to ASCII decode errors.
