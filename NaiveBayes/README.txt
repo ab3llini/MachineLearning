@@ -16,6 +16,8 @@ At this point enter : "python main.py"
 Depending on your hardware specs, the program should take around 5-7 seconds to exit.
 
 It will print the request of point a) on STDOUT and will plot the requested graphs in point b)
+The graph is in this folder saved in PNG format.
+
 
 Additional Information:
 
