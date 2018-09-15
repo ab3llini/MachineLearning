@@ -37,28 +37,26 @@ class MultinomialNB(Model):
         # List of predicted values
         predictions = []
 
+        # Compute total number of words for current class
+        c_d = {}
+        for class_ in self.priors:
+            for word in self.counts:
+                c_d[class_] = (c_d[class_] + self.counts[word][class_]) if class_ in c_d else self.counts[word][class_]
+
         # For each sample provided predict the class taking the highest score out of
         # every possible class
         for sample in x:
             # Compute the probabilities for each possible class and store it in a dict
             # Scores = { class_1 : probability, ..., class_n : probability }
             scores = {}
-            strings = {}
             for class_ in self.priors:
 
                 # Init the probability of word to the one of the prior P(class)
                 p = self.priors[class_]
 
-                # Compute total number of words for current class
-                c_d = 0
-
-                for word in self.counts:
-                    c_d += self.counts[word][class_]
-
-                strings[class_] = str(self.priors[class_])
                 for token in sample:
                     # For each word compute its probability, given the class, alpha and voc_size and multiply with p
-                    p *= self._compute_probability(token, class_, c_d, alpha, voc_size)
+                    p *= self._compute_probability(token, class_, c_d[class_], alpha, voc_size)
 
                 # Add the class with its computed probability to the scores dictionary
                 scores[class_] = p
