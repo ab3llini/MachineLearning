@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 
 # Open file and read content in a variable.
 # Couldn't use standard python way of opening files due to ASCII decode errors.
-raw = codecs.open('SMSSpamCollection.txt', 'r', encoding='utf-8').readlines()
+raw = codecs.open('./SMSSpamCollection.txt', 'r', encoding='utf-8').readlines()
 
 # Create a Multinomial Naive Bayes Classifier, in this case we only have 2 classes so it is Binary
 model = MultinomialNB()
