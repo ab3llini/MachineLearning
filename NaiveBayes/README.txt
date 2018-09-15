@@ -39,7 +39,7 @@ RECALL = 0.9918300653594772
 F-SCORE = 0.9869918699186992
 
 
-Description of Training scores
+Description of Testing scores
 Confusion matrix:
 TP = 124
 TN = 967

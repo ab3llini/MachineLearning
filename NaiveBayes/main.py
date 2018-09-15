@@ -27,7 +27,7 @@ pred_ts = model.predict(x_ts, alpha=0.1, voc_size=20000)
 
 # Print train and test predictions performance
 train_scores = BinaryScorer(y_tr, pred_tr, description='Training').describe()
-test_scores = BinaryScorer(y_ts, pred_ts, description='Training').describe()
+test_scores = BinaryScorer(y_ts, pred_ts, description='Testing').describe()
 
 # Create list of alphas with different i value
 i = [i for i in range(-5, 1)]
