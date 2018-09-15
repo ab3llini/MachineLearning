@@ -9,6 +9,8 @@ class Model:
         pass
 
 
+# This is a multi class implementation of the naive bayes classifier.
+# Even though the dataset contains just two classes, it has been implemented to work with an arbitrary number of classes
 class MultinomialNB(Model):
 
     def __init__(self, verbose=False):
@@ -20,27 +22,16 @@ class MultinomialNB(Model):
     # Requires a matrix X of features and a column vector of labels
     def fit(self, x, y):
 
-        self.counts = {}
+        # Clear counts & priors
         self.priors = {}
+        self.counts = {}
 
-        # Compute prior probabilities, aka P(class)
-        if self.verbose:
-            print('Computing priors..')
-
-        # Count size of y, will divide the class count to compute ith P(class)
-        tot = len(y)
-        for class_ in y:
-            self.priors[class_] = 1 if class_ not in self.priors else (self.priors[class_] + 1)
-
-        self.priors = {k: v / tot for k, v in self.priors.items()}
-
-        if self.verbose:
-            print('Priors : %s' % self.priors)
-            print('Computing word counts.. this might take a couple of seconds..')
-
+        self._compute_priors(y)
         self._compute_counts(x, y)
 
-    # Predicts output classes given an inout, usually test set
+    # Predicts output classes given an input, usually test set
+    # For the specific purpose of the assignment, an additional value might be passes: voc_size
+    # In this case this value is set to 20.000 by the caller.
     def predict(self, x, alpha=1.0, voc_size=None):
 
         # List of predicted values
@@ -58,8 +49,9 @@ class MultinomialNB(Model):
                 # Init the probability of word to the one of the prior P(class)
                 p = self.priors[class_]
 
-                # Number of words for label spam/ham words y
+                # Compute total number of words for current class
                 c_d = 0
+
                 for word in self.counts:
                     c_d += self.counts[word][class_]
 
@@ -80,6 +72,7 @@ class MultinomialNB(Model):
     # Computes the probability of a word given the class
     def _compute_probability(self, w, class_, c_d, alpha, voc_size=None):
 
+        # Check whether or not the word w appeared at least once while fitting the model or not
         null_frequency = False if w in self.counts else True
 
         # Number of occurrences of word xi in spam/ham messages y
@@ -87,6 +80,22 @@ class MultinomialNB(Model):
 
         # Compute probability : p = (count_d_y * alpha) / (count_d * alpha * N)
         return (c_d_y + alpha) / (c_d + alpha * (len(self.counts) if voc_size is None else voc_size))
+
+    # Compute prior probabilities for every class
+    def _compute_priors(self, y):
+        if self.verbose:
+            print('Computing priors..')
+
+        # Count size of y, will divide the class count to compute ith P(class)
+        tot = len(y)
+        for class_ in y:
+            self.priors[class_] = 1 if class_ not in self.priors else (self.priors[class_] + 1)
+
+        self.priors = {k: v / tot for k, v in self.priors.items()}
+
+        if self.verbose:
+            print('Priors : %s' % self.priors)
+            print('Computing word counts.. this might take a couple of seconds..')
 
     # Creates a dictionary where the key is a word and the value is another dictionary where
     # we have two keys: ham and spam. For each of these two keys there is the number of occurrences of the word in that
