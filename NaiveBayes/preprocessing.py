@@ -88,13 +88,19 @@ class Preprocessor:
     # Splits data in train and test
     # Can define custom train size, default is 80%
     # Can define a customized seed, to have always the same split. Useful to debug. Default is None
-    def split(self, percentage_train=0.8, seed=None, functional=True):
+    # If shuffle is true, the data will be shuffled
+    def split(self, percentage_train=0.8, seed=None, shuffle=True, functional=True):
 
+        # Tokenize data if not already done it
         if self.tokenized is None:
             self.tokenize()
 
+        # If a random seed is provided the split will always be the same
         if seed is not None:
             random.seed(seed)
+
+        if shuffle:
+            random.shuffle(self.tokenized)
 
         # Prepare containers for train/test X and Y
         self.x_tr, self.y_tr, self.x_ts, self.y_ts = [], [], [], []

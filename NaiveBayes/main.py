@@ -9,12 +9,13 @@ from matplotlib import pyplot as plt
 # Couldn't use standard python way of opening files due to ASCII decode errors.
 raw = codecs.open('./SMSSpamCollection.txt', 'r', encoding='utf-8').readlines()
 
-# Create a Multinomial Naive Bayes Classifier, in this case we only have 2 classes so it is Binary
+# Create a Multinomial Naive Bayes Classifier, in this case we only have 2 classes
 model = MultinomialNB()
+
 
 # Preprocess, Tokenize and Split data in train and test
 # IMPORTANT: Unless seed parameter is removed from call, the split will always be the same.
-x_tr, y_tr, x_ts, y_ts = Preprocessor(data=raw).preprocess().tokenize().split(percentage_train=0.8, seed=5555, functional=False)
+x_tr, y_tr, x_ts, y_ts = Preprocessor(data=raw).preprocess().tokenize().split(percentage_train=0.8, seed=555, shuffle=True, functional=False)
 
 # Fit the model
 model.fit(x_tr, y_tr)
