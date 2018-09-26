@@ -1,6 +1,8 @@
 Dependencies:
 
-You should have numpy installed, if not type in the terminal "pip install numpy"
+You need to have python3 installed.
+
+You should have numpy installed, if not type in the terminal "pip3 install numpy"
 If you are using an IDE such as PyCharm, you can have it automatically install numpy for you.
 
 All other components are already builtin into the latest releases of python
@@ -11,7 +13,7 @@ If you are using an IDE such as PyCharm, right click on the file "main.py" and s
 Otherwise open a terminal and cd into the root folder "NaiveBayes".
 Typing ls (on unix-like systems) or dir (Windows) you should see all the project files (main, model, preprocessing..)
 
-At this point enter : "python main.py"
+At this point enter : "python3 main.py" (is important to use python3 otherwise some errors might pop up)
 
 Depending on your hardware specs, the program should take around 5-7 seconds to exit.
 

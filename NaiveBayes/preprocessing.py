@@ -62,7 +62,7 @@ class Preprocessor:
         for line in self.preprocessed:
 
             # For each line in the preprocessed data split it into tokens according to the given separator
-            tokens_ = [str.lower(tk) for tk in line.split(separator)]
+            tokens_ = [tk.lower() for tk in line.split(separator)]
             self.tokenized.append(tokens_)
 
             if self.verbose:
