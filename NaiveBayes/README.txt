@@ -2,7 +2,7 @@ Dependencies:
 
 You need to have python3 installed.
 
-You should have numpy installed, if not type in the terminal "pip3 install numpy"
+You should have numpy and matplotlib installed, if not type in the terminal "pip3 install numpy" or "matplotlib"
 If you are using an IDE such as PyCharm, you can have it automatically install numpy for you.
 
 All other components are already builtin into the latest releases of python
