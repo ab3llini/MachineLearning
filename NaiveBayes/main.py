@@ -1,6 +1,6 @@
 import codecs
 import numpy as np
-from model import MultinomialNB
+from multinomialNB import MultinomialNB
 from preprocessing import Preprocessor
 from scorer import BinaryScorer
 from matplotlib import pyplot as plt

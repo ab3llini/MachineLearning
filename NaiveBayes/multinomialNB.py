@@ -1,13 +1,5 @@
 import operator
-
-
-class Model:
-    def fit(self, x, y):
-        pass
-
-    def predict(self, y):
-        pass
-
+from model import Model
 
 # This is a multi class implementation of the naive bayes classifier.
 # Even though the dataset contains just two classes, it has been implemented to work with an arbitrary number of classes
