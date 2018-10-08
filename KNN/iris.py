@@ -14,7 +14,7 @@ iris = IrisParser()
 knn = KNeighborsClassifier(n_neighbors=3)
 
 # Get features and labels
-features, labels = iris.parse(seed=555, shuffle=False)
+features, labels = iris.parse(shuffle=False)
 
 # We have 2D features, lets call one axis x and the other y
 x = features[:, 0]
@@ -58,6 +58,6 @@ plt.xlabel('Feature 2')
 
 # Region colors
 
-plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=3)
+plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=1)
 
 plt.show()
