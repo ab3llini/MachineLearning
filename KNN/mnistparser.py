@@ -79,7 +79,7 @@ class MnistParser():
             sample = data[idx]
 
             x.append(sample[0])
-            y.append(sample[1])
+            y.append(sample[1][0])
 
             # Increment both counter and index
             added += 1
