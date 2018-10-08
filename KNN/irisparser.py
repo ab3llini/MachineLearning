@@ -6,8 +6,8 @@ import numpy as np
 # Parser and formatter for iris dataset
 class IrisParser:
 
-    def __init__(self):
-        self.df = pd.read_csv('iris.csv', header=None)
+    def __init__(self, df='iris.csv'):
+        self.df = pd.read_csv(df, header=None)
 
     # Returns a sample from the dataset as (features, label)
     def fetch_sample(self, idx):
@@ -34,6 +34,38 @@ class IrisParser:
             random.shuffle(container)
 
         return np.array(x), np.array(y).transpose()
+
+
+def _flip_val(v, seed):
+    random.seed(seed)
+    return random.choice([2, 3]) if v == 1 else random.choice([1, 3]) if v == 2 else random.choice([1, 2])
+
+
+# Helper to generate 4 "dirty" dataset
+def flip_df(seed=555):
+    df = pd.read_csv('iris.csv', header=None)
+    m = [10, 20, 30, 50]
+    random.seed(seed)
+    for v in m:
+        # Possible flippable indices
+        candidates = [i for i in range(0, df.shape[0])]
+        selected = []
+        # Randomly select and index in the candidates
+        # and removes it from the candidates list
+        for pick in range(v):
+            selected_idx = random.choice(candidates)
+            selected.append(selected_idx)
+            candidates.remove(selected_idx)
+
+        dirty = df.copy()
+        for idx in selected:
+            dirty.iloc[idx, 2] = _flip_val(dirty.iloc[idx, 2], seed)
+
+        dirty.to_csv('iris_m'+str(v), header=False, index=False)
+
+
+flip_df()
+
 
 
 
