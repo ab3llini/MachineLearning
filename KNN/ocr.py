@@ -1,7 +1,6 @@
 from mnistparser import MnistParser
 from knn import KNeighborsClassifier
-from tqdm import tqdm
-import numpy as np
+from cross_validate import *
 import plotter as pl
 
 # Create a new instance of the parser
@@ -9,6 +8,32 @@ mnist = MnistParser()
 # Create a new instance of the KNN model with K=1
 knn = KNeighborsClassifier(n_neighbors=1)
 
+# ************************************************* Train error
+# Plot of test error with different training size
+tr_sizes = [100, 1000, 2500, 5000, 7500, 10000]
+loocv_errors = []
+
+print('Computing training LOOCV error with this training sizes: ' + str(tr_sizes))
+
+for s in tr_sizes:
+
+    # Select s samples randomly
+    x, y = mnist.select(seed=555, shuffle=True, size=s)
+
+    # Create LOOCV folds
+    x_folds, y_folds = mnist.k_fold(x, y, s)
+
+    # Compute LOOCV error
+    loocv_errors.append(cross_validate(x_folds, y_folds, knn))
+
+for idx, err in enumerate(loocv_errors):
+    print('loocv training error with %s samples: accuracy : %s | error : %s ' % (tr_sizes[idx], (1 - err), err))
+
+
+# Print errors
+pl.plot(tr_sizes, loocv_errors, title='Train errors', legend='loocv error', color='blue', xlabel='train size', ylabel='error', fname='ocr_loocv')
+
+# ************************************************* Cross validation error
 # Use the parse to select randomly 1000 samples out of the 10000 available
 print("Selecting 1000 samples randomly")
 x, y = mnist.select(seed=555, shuffle=True, size=1000)
@@ -28,50 +53,7 @@ for k in folds:
     # x_folds and y_folds are arrays whose size is 1000 / k, where k is the size of the fold
     x_folds, y_folds = mnist.k_fold(x, y, k)
 
-    # We have this array to save the temporary errors while performing cross validation for each fold
-    errors = []
-    # Select one of the folds sequentially
-    # Use the selected one as test and the others as training samples
-    # We use pop/insert macros to work on the fold arrays and ensure consistency between loops
-    for selected in tqdm(range(len(x_folds))):
-        x_test = x_folds.pop(selected)
-        y_test = y_folds.pop(selected)
-        x_train, y_train = [], []
-
-        # Merge all the x folds in a single training vector
-        for e in x_folds:
-            x_train += e
-
-        # Merge all the y folds in a single training vector
-        for e in y_folds:
-            y_train += e
-
-        # Fit model
-        knn.fit(x_train, y_train)
-
-        # Predict label
-        preds = knn.predict(x_test)
-
-        # Convert the real labels to np array for convenience
-        real = np.array(y_test)
-
-        # Compute the error for the current fold
-        wrong_preds = 0
-        for idx, label in enumerate(real):
-            if label != preds[idx]:
-                wrong_preds += 1
-
-        # Add the computed error to the temporary error container
-        errors.append(wrong_preds / len(preds))
-
-        # Reinsert the fold used for testing in the fold array
-        x_folds.insert(selected, x_test)
-        y_folds.insert(selected, y_test)
-
-    # Before starting over with a different k value for a new cross validation computation
-    # Compute the cross validation error (ce) and add it to the main cross validation error container
-    ce = sum(errors) / len(errors)
-    cross_error.append(ce)
+    cross_error.append(cross_validate(x_folds, y_folds, knn))
 
 # Print results
 for idx, err in enumerate(cross_error):

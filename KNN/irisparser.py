@@ -1,6 +1,7 @@
 import pandas as pd
 import random
 import numpy as np
+import math
 
 
 # Parser and formatter for iris dataset
@@ -33,7 +34,25 @@ class IrisParser:
         if shuffle:
             random.shuffle(container)
 
-        return np.array(x), np.array(y).transpose()
+        return x, np.array(y).transpose().tolist()
+
+    def k_fold(self, x, y, k):
+        size = len(y)
+        fold_size = math.floor(size / k)
+        rest = size % k
+        x_folds = []
+        y_folds = []
+        for i in range(k):
+            idx = i * fold_size
+            if i == k - 1:
+                x_folds.append(x[idx:idx + fold_size + rest])
+                y_folds.append(y[idx:idx + fold_size + rest])
+
+            else:
+                x_folds.append(x[idx:idx + fold_size])
+                y_folds.append(y[idx:idx + fold_size])
+
+        return x_folds, y_folds
 
 
 def _flip_val(v, seed=None):

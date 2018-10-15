@@ -2,11 +2,17 @@ from irisparser import IrisParser
 from knn import KNeighborsClassifier
 import numpy as np
 from matplotlib import pyplot as plt
+from cross_validate import *
+import plotter as plotter
 
 # Mesh resolutions
-resolution = 0.01
+resolution = 0.05
 
-for df in ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']:
+loocvs = []
+
+dsets = ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']
+
+for df in dsets:
 
     print('Working on dataset = ' + df)
 
@@ -18,6 +24,23 @@ for df in ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']:
 
     # Get features and labels
     features, labels = iris.parse(shuffle=False)
+
+    # ************************************************* Train error
+    print('Computing training LOOCV error')
+
+    # Create LOOCV folds
+    x_folds, y_folds = iris.k_fold(features, labels, len(features))
+
+    # Compute LOOCV error
+    loocv_e = cross_validate(x_folds, y_folds, knn)
+
+    # Add this error to a list, for later plotting
+    loocvs.append(loocv_e)
+
+    print('loocv training error for dataset %s: accuracy : %s | error : %s ' % (df, (1 - loocv_e), loocv_e))
+
+    features = np.array(features)
+    labels = np.array(labels)
 
     # We have 2D features, lets call one axis x and the other y
     x = features[:, 0]
@@ -65,3 +88,7 @@ for df in ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']:
     plt.show()
     name = df+'.png'
     fig.savefig(name, dpi=300)
+
+
+# Plot loocv errors for different datasets
+plotter.plot(dsets, loocvs, title='Train errors', legend='loocv error', color='blue', xlabel='dataset', ylabel='error', fname='iris_loocv')
