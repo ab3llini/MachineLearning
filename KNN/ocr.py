@@ -79,4 +79,5 @@ for idx, err in enumerate(cross_error):
 
 
 # Plot results using a wrapper made around matplotlib
-pl.plot(folds, cross_error, 'Cross validation error', 'Error', 'blue', 'Number of folds', 'Error value').show()
+plt = pl.plot(folds, cross_error, 'Cross validation error', 'Error', 'blue', 'Number of folds', 'Error value')
+plt.show()

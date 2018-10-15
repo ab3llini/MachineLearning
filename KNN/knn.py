@@ -19,7 +19,8 @@ class KNeighborsClassifier(Model):
         self.data = x
         self.labels = y
 
-    # For each sample in x vector, compute the K closest neighbors and performs majority voting amongst them
+    # For each sample in x vector
+    # compute the K closest neighbors and performs majority voting amongst them
     def predict(self, x):
 
         preds = []

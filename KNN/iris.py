@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Mesh resolutions
-resolution = 0.03
+resolution = 0.01
 
 for df in ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']:
 
@@ -54,13 +54,14 @@ for df in ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']:
 
     print("Drawing graph | total points = " + l)
 
-
     plt.title('Decision boundary for Iris')
     plt.ylabel('Feature 1')
     plt.xlabel('Feature 2')
 
     # Region colors
-
+    fig = plt.figure()
     plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=1)
 
     plt.show()
+    name = df+'.png'
+    fig.savefig(name, dpi=300)
