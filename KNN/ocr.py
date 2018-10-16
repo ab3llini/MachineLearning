@@ -11,54 +11,63 @@ parse_target = {
 }
 
 
-# Create a new instance of the parser
-mnist_train = MnistParser(target=parse_target['training'])
-mnist_test = MnistParser(target=parse_target['testing'])
+# Create new instances of the parser, one for training and one for testing
+tr_parser = MnistParser(target=parse_target['training'])
+ts_parser = MnistParser(target=parse_target['testing'])
 
 # Create a new instance of the KNN model with K=1
 knn = KNeighborsClassifier(n_neighbors=1)
 
 
-# Used to compute errors on train/test set with LOOCV
+# Used to compute how the classification error for the 1-Nearest Neighbor
+# on the MNIST dataset change with the number of training examples
 # This takes approx 30min, it has already been computed and the results are shown in the "ocr_train_loocv_err.png" image
 # This is a general p
-def compute_error(data, seed=555):
-    # Plot of test error with different training size
-    sizes = [100, 1000, 2500, 5000, 7500, 10000]
-    loocv_errors = []
-    loocv_accuracies = []
+def classification_error(seed=555):
 
-    print('Computing LOOCV error with this sizes: ' + str(sizes))
+    nr_training_examples = [100, 1000, 2500, 5000, 7500, 10000]
+    errors = []
+    accuracies = []
 
-    for s in sizes:
+    print('Computing classification error.. be patient.')
 
-        # Select s samples randomly
-        x, y = data.select(seed=seed, shuffle=True, size=s)
+    for s in nr_training_examples:
 
-        # Create LOOCV folds
-        x_folds, y_folds = data.k_fold(x, y, s)
+        # Select s samples randomly from the training set and uses them to fit the knn model
+        x_tr, y_tr = tr_parser.select(seed=seed, shuffle=True, size=s)
 
-        # Compute LOOCV error
-        e = cross_validate(x_folds, y_folds, knn)
+        # Select all the testing samples
+        x_ts, y_ts = ts_parser.select(shuffle=False, size=10000)
 
-        # Add errors & accuracy to array
-        loocv_errors.append(e)
-        loocv_accuracies.append(1 - e)
+        # Fit the model with the current training set
+        knn.fit(x_tr, y_tr)
 
-    for idx, err in enumerate(loocv_errors):
-        print('loocv error with %s samples: accuracy : %s | error : %s ' % (sizes[idx], (1 - err), err))
+        # Predict the testing set
+        preds = knn.predict(x_ts)
+
+        # Compute the error for the current fold
+        wrong_preds = 0
+        for idx, label in enumerate(y_ts):
+            if label != preds[idx]:
+                wrong_preds += 1
+
+        error = wrong_preds / len(preds)
+        errors.append(error)
+        accuracies.append(1 - error)
+
+        print('Classification error with %s samples: accuracy : %s | error : %s ' % (s, (1 - error), error))
 
     # Print errors & accuracies
-    pl.plot(sizes, loocv_errors, title='Classification error', legend='loocv error', color='blue', xlabel='Test size', ylabel='Error', fname='ocr_test_loocv_err')
-    pl.plot(sizes, loocv_accuracies, title='Classification accuracy', legend='loocv accuracy', color='green', xlabel='Test size', ylabel='Accuracy', fname='ocr_test_loocv_acc')
+    pl.plot(nr_training_examples, errors, title='Classification error', legend='error', color='blue', xlabel='Train size', ylabel='Error', fname='ocr_test_loocv_err')
+    pl.plot(nr_training_examples, accuracies, title='Classification accuracy', legend='accuracy', color='green', xlabel='Train size', ylabel='Accuracy', fname='ocr_test_loocv_acc')
 
 
 # Cross validation error, computed on the training set
-def cv(seed=555):
+def n_fold_cross_val(seed=555):
 
     # Use the parser to select randomly 1000 samples out of the 10000 available
     print("Selecting 1000 samples randomly")
-    x, y = mnist_train.select(seed=seed, shuffle=True, size=1000)
+    x, y = tr_parser.select(seed=seed, shuffle=True, size=1000)
 
     # Container of indices for k-fold cross validation to be performed
     folds = [3, 10, 50, 100, 1000]
@@ -73,7 +82,7 @@ def cv(seed=555):
 
         # Create a fold with the right K
         # x_folds and y_folds are arrays whose size is 1000 / k, where k is the size of the fold
-        x_folds, y_folds = mnist_train.k_fold(x, y, k)
+        x_folds, y_folds = tr_parser.k_fold(x, y, k)
 
         cross_error.append(cross_validate(x_folds, y_folds, knn))
 
@@ -88,8 +97,8 @@ def cv(seed=555):
 
 # High complexity, approx 30 min required, already pre computed, output in ocr_train_loocv_err.png file
 # compute_error(data=mnist_train, seed=555)
-compute_error(data=mnist_test, seed=555)
+classification_error(seed=555)
 
 
 # Run cross validation
-cv(seed=555)
+# n_fold_cross_val(seed=555)
