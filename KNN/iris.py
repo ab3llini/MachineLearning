@@ -6,7 +6,7 @@ from cross_validate import *
 import plotter as plotter
 
 # Mesh resolutions
-resolution = 0.05
+resolution = 0.01
 
 loocvs = []
 
@@ -77,12 +77,10 @@ for df in dsets:
 
     print("Drawing graph | total points = " + l)
 
-    plt.title('Decision boundary for Iris')
+    fig = plt.figure()
+    plt.title('Decision boundary for ' + df)
     plt.ylabel('Feature 1')
     plt.xlabel('Feature 2')
-
-    # Region colors
-    fig = plt.figure()
     plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=1)
 
     plt.show()
