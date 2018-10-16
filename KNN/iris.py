@@ -8,7 +8,11 @@ import plotter as plotter
 # Mesh resolutions
 resolution = 0.01
 
+# This array holds the loocv errors for the various datasets
 loocvs = []
+
+# This array holds the loocv accuracies for the various datasets
+accuracies = []
 
 dsets = ['iris_m10', 'iris_m20', 'iris_m30', 'iris_m50']
 
@@ -34,8 +38,9 @@ for df in dsets:
     # Compute LOOCV error
     loocv_e = cross_validate(x_folds, y_folds, knn)
 
-    # Add this error to a list, for later plotting
+    # Add this error to a list, for later plotting, and the accuracy too
     loocvs.append(loocv_e)
+    accuracies.append(1 - loocv_e)
 
     print('loocv training error for dataset %s: accuracy : %s | error : %s ' % (df, (1 - loocv_e), loocv_e))
 
@@ -89,4 +94,5 @@ for df in dsets:
 
 
 # Plot loocv errors for different datasets
-plotter.plot(dsets, loocvs, title='Train errors', legend='loocv error', color='blue', xlabel='dataset', ylabel='error', fname='iris_loocv')
+plotter.plot(dsets, loocvs, title='Train errors', legend='loocv error', color='blue', xlabel='dataset', ylabel='error', fname='iris_loocv_err')
+plotter.plot(dsets, accuracies, title='Train accuracies', legend='loocv accuracy', color='green', xlabel='dataset', ylabel='accuracy', fname='iris_loocv_acc')

@@ -78,6 +78,6 @@ plt.grid(True, linestyle=':')
 plt.legend(loc="upper right")
 
 plt.show()
-fig.savefig('graph.png', dpi=300)
+fig.savefig('ocr_cross_val_err.png', dpi=300)
 
 

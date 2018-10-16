@@ -5,13 +5,14 @@ import math
 import numpy as np
 
 
-class MnistParser():
 
-    def __init__(self):
+class MnistParser:
+
+    def __init__(self, target=0):
         self.df = loadmat('mnist.mat')['mnist'][0][0]
 
-        self.tr_images = np.array(self.df[0]).astype(np.int32)
-        self.tr_labels = np.array(self.df[2]).astype(np.int32)
+        self.tr_images = np.array(self.df[target]).astype(np.int32)
+        self.tr_labels = np.array(self.df[target + 2]).astype(np.int32)
 
     def fetch_img(self, idx):
         return self.tr_images[:, :, idx], self.tr_labels[idx]
