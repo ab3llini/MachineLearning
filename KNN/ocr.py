@@ -95,10 +95,9 @@ def n_fold_cross_val(seed=555):
     plt.show()
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # IMPORTANT
 # High complexity, approx 30 min required, already pre computed, output in ocr_train_loocv_err.png file
-# compute_error(data=mnist_train, seed=555)
-classification_error(seed=555)
-
+# classification_error(seed=555)
 
 # Run cross validation
-# n_fold_cross_val(seed=555)
+n_fold_cross_val(seed=555)

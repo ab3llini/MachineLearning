@@ -1,12 +1,15 @@
 from irisparser import IrisParser
 from knn import KNeighborsClassifier
-import numpy as np
 from matplotlib import pyplot as plt
 from cross_validate import *
 import plotter as plotter
+from matplotlib import colors as mcolors
+
+# Better colors mapping for pyplot
+colors = dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS)
 
 # Mesh resolutions
-resolution = 0.01
+resolution = 0.02
 
 # This array holds the loocv errors for the various datasets
 loocvs = []
@@ -77,16 +80,26 @@ for df in dsets:
     mesh_out = np.array(knn.predict(mesh_in))
 
     print('Computing mesh colors..')
-    c = lambda x: 'red' if x == 1 else 'blue' if x == 2 else 'green'
-    mesh_colors = [c(p) for p in mesh_out]
+
+    c = lambda x: 'turquoise' if x == 1 else 'gold' if x == 2 else 'dodgerblue'
+
+    # Prepare the mesh colors
+    mesh_colors = [colors[c(p)] for p in mesh_out]
+    features_colors = [colors[c(p)] for p in labels]
 
     print("Drawing graph | total points = " + l)
 
+    # Draw the decision boundaries
     fig = plt.figure()
     plt.title('Decision boundary for ' + df)
     plt.ylabel('Feature 1')
     plt.xlabel('Feature 2')
-    plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=1)
+    # Draw the mesh
+    plt.scatter(mesh_in[:, 0], mesh_in[:, 1], color=mesh_colors, s=2)
+
+    # Draw the dataset points
+    plt.scatter(x, y, color=features_colors, s=40, edgecolors='k')
+
 
     plt.show()
     name = df+'.png'

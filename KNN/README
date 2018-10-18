@@ -1,0 +1,12 @@
+-> In order to run the code you need to have the following libraries installed:
+
+numpy
+tqdm (used for progress bar on computations)
+matplotlib
+{operator, random should be already installed}
+
+-> The python version should be 3.6.x
+
+-> To run the code snippets you should run ocr.py for the first part and iris.py for the second one.
+
+as usual, you can cd in the KNN folder and call "python3 ocr.py" or "python3 iris.py"
