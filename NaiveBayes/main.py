@@ -2,7 +2,7 @@ import codecs
 import numpy as np
 from multinomialNB import MultinomialNB
 from preprocessing import Preprocessor
-from scorer import BinaryScorer
+from Scorer.scorer import BinaryScorer
 from matplotlib import pyplot as plt
 
 # Open file and read content in a variable.

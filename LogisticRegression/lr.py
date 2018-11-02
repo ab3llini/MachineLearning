@@ -23,8 +23,10 @@ class LogisticRegression(Model):
         self.weights = None
 
     def __logistic_for(self, x):
-        v = np.dot(self.weights, x)
-        return math.e ** v
+        return 1 / (1 + math.e ** - float(np.dot(self.weights, x)))
+
+    def __exp_for(self, x):
+        return math.e ** np.dot(self.weights, x)
 
     def __compute_gradient(self, x, y):
 
@@ -40,14 +42,14 @@ class LogisticRegression(Model):
 
         for x_i, y_i in zip(x, y):
             # Compute the logistic function value for x just once for performance reasons
-            logistic = self.__logistic_for(x_i)
+            logistic = self.__exp_for(x_i)
 
             # Compute the contribution of this sample to the gradient for the considered weight
             gradient += x_i * y_i - (x_i * logistic) / (1 + logistic) - self.l2penalty * self.weights
 
         return gradient
 
-    def fit(self, x, y, lr=10**(-4), maxit=1000, tolerance=math.e**(-2)):
+    def fit(self, x, y, lr=10**(-4), maxit=1000, tolerance=math.e**(-2), callback=None):
 
         """
         This method fits the model
@@ -57,6 +59,7 @@ class LogisticRegression(Model):
         :param maxit: maximum number of iterations
         :param tolerance: threshold to stop fitting
         :return: self, allows to make functional calls
+        :param callback: if provided will be called passing the status of the model at each iteration
         """
 
         # Useful variables
@@ -88,6 +91,10 @@ class LogisticRegression(Model):
             if mag < tolerance:
                 break
 
+            # If present, perform a callback for any kind of purpose
+            if callback:
+                callback(self)
+
         return self
 
     def predict(self, x):
@@ -98,4 +105,10 @@ class LogisticRegression(Model):
         :return: the predicted label
         """
 
-        return round(self.__logistic_for(x))
+        size = x.shape[0]
+        out = np.empty(shape=(size, 1))
+
+        for i, sample in enumerate(x):
+            out[i] = np.round(self.__logistic_for(sample))
+
+        return out
