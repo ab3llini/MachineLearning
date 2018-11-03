@@ -88,12 +88,13 @@ class LogisticRegression(Model):
                 print('It = %s, mean abs gradient = %s' % (it, mag))
 
             # Stop fitting if mag get below tolerance threshold
-            if mag < tolerance:
+            if tolerance is not None and mag < tolerance:
                 break
 
             # If present, perform a callback for any kind of purpose
+            # Self is always passes along with the params provided
             if callback:
-                callback(self)
+                callback[0](*([self] + callback[1:]))
 
         return self
 
